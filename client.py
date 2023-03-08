@@ -24,14 +24,15 @@ def handle_messages(connection: socket.socket):
             connection.close()
             break
 
-def client() -> None:
+def client(SERVER_ADDRESS, SERVER_PORT) -> None:
     '''
         Main process that start client connection to the server 
         and handle it's input messages
     '''
 
-    SERVER_ADDRESS = '0.0.0.0'
-    SERVER_PORT = 12000
+    # Port and address are taken by argument now.
+    #SERVER_ADDRESS = '0.0.0.0'
+    #SERVER_PORT = 12000
 
     try:
         # Instantiate socket and start connection with server

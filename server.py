@@ -66,14 +66,16 @@ def remove_connection(conn: socket.socket) -> None:
         connections.remove(conn)
 
 
-def server() -> None:
+def server(LISTENING_PORT, IP_ADDRESS) -> None:
     '''
         Main process that receive client's connections and start a new thread
         to handle their messages
     '''
 
-    LISTENING_PORT = 12000
-    IP_ADDRESS = "0.0.0.0"
+
+    # Address and port are collected via argument.
+    #LISTENING_PORT = 12000
+    #IP_ADDRESS = "0.0.0.0"
     
     try:
         # Create server and specifying that it can only handle 4 connections by time!
