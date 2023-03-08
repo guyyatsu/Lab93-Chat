@@ -107,4 +107,18 @@ def server(LISTENING_PORT, IP_ADDRESS) -> None:
 
 
 if __name__ == "__main__":
-    server()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--address", help="IP Address to route connections on.")
+    parser.add_argument("-p", "--port", help="Port number to listen on.")
+
+    arguments = parser.parse_args()
+
+    if not arguments.address: address = arguments.address
+    else: address = "0.0.0.0"
+
+    if not arguments.port: port= arguments.port
+    else: port = 12000
+
+
+    server(port, address)

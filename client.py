@@ -62,4 +62,16 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
 
 
 if __name__ == "__main__":
-    client()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--address", help="IP Address to route connections on.")
+    parser.add_argument("-p", "--port", help="Port number to listen on.")
+
+    arguments = parser.parse_args()
+    if arguments.address: address = arguments.address
+    else: address = ".0.0.0"
+
+    if not arguments.port: port = arguments.port
+    else: port = 12000
+
+    client(address, port)
