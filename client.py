@@ -6,7 +6,6 @@ from glob import glob
 from logging import getLogger, exception
 
 
-
 def createUserDB():
     """
     Create an sqlite3 database within the users .local directory and populate
@@ -90,8 +89,6 @@ def handle_messages(connection: socket.socket):
 
 def client(SERVER_ADDRESS, SERVER_PORT) -> None:
     '''
-        Main process that start client connection to the server 
-        and handle it's input messages
     '''
 
 
@@ -120,24 +117,30 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
             such as quitting the session or defining a subject for
             a message.  Commands are defined by typing a forward slash
             as the first letter of your message."""
-            if msg[0] != "/": pass
+
+            # All commands start with a '/', so check for that.
+            if message_packet["content"][0] != "/": pass
             else:
-                cmd = msg.split(" ")[0]
 
-                if cmd == "/quit" or "quit" or None: break
+                # The command is the first word in the msg.
+                cmd = message_packet["content"].split(" ")[0]
 
-                if cmd == "/subject" or "subject" or "subject:":
+                # The quit command breaks the loop and
+                # returns control back to the terminal.
+                if cmd == "/quit": break
+
+                # Allows the attachment of a subject line to a msg.
+                if cmd == "/subject":
                     message_packet["subject"] = str(msg.split(" ")[1])
                     message_packet["content"] = str(" ".join(msg.split(" ")[2:-1]))
 
+
             # Convert message packet to ascii string
-            byteMessage = base64.b64encode(
-                str(message_packet).encode('ascii')
+            socket_instance.send(
+                base64.b64encode(
+                    str(message_packet).encode('ascii')
+                )
             )
-
-
-            # Parse message to utf-8
-            socket_instance.send(byteMessage)
 
         # Close connection with the server
         socket_instance.close()
