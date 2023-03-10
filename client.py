@@ -108,6 +108,8 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
 
         # Read user's input until it quit from chat and close connection
         while True:
+
+            # Recieve user input as message string.
             msg = input()
 
             message_packet = {"content": msg, "username": username()})
@@ -150,12 +152,34 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", "--address", help="IP Address to route connections on.")
     parser.add_argument("-p", "--port", help="Port number to listen on.")
+    parser.add_argument("-s", "--scan", action="store_true")
 
     arguments = parser.parse_args()
+
     if arguments.address: address = arguments.address
     else: address = "0.0.0.0"
 
     if arguments.port: port = arguments.port
     else: port = 12000
+
+
+    # TODO: Local IP Address Scanning.
+    """ 
+    if arguments.scan:
+        socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        socket.connect(("8.8.8.8", 80))
+
+        IP = socket.getsockname()[0]
+        LocalNet = ".".join(IP.split(".")[0:3])
+        socket.close()
+
+
+        print(f"Scanning for connection on local network {LocalNet}0-255, port {port}")
+        for _address in range(0, 256):
+            try: client(f"{LocalNet}.{str(_address)}", port)
+
+    """
+        
+        
 
     client(address, port)
