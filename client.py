@@ -33,12 +33,15 @@ def createUserDB():
 
     # The users .local directory; see the Linux FS for info about that.
     local_directory = f"/home/{username()}/.local"
+    debugging(f"{_time}:{_name}:    --Local Directory: ✅")
 
     # Filename and path for the sqlite database.
     lab_database = f"{local_directory}/lab-93.db"
+    debugging(f"{_time}:{_name}:    --Lab Database: ✅")
 
     # Bash command for creating the .local directory.
     createSubDirectory = f"mkdir -p {local_directory} > /dev/null "
+    debugging(f"{_time}:{_name}:    --Sub-Directory Shell String: ✅")
 
     # SQLite3 command for creating the messages table
     # with our required columns.
@@ -51,23 +54,60 @@ def createUserDB():
                 f"message TEXT"
             f")"
     )
+    debugging(f"{_time}:{_name}:    --Messages Table Creation SQL String: ✅")
+
+
 
     # Check for the .local directory and create it if need be.
-    if len(glob(local_directory)) >= 1: pass
-    else: subprocess.Run(createSubDirectory.split())
+    debugging(f"{_time}:{_name}:    --Validate Local Directory:")
+
+    # If glob returns any results then the directory already exists.
+    if len(glob(local_directory)) >= 1:
+        debugging(f"{_time}:{_name}:      --Directory exists. ✅"); pass
+
+    else:# If not, then the directory needs to be created.
+        debugging(f"{_time}:{_name}:      --Directory does not exist; creating.")
+
+        try: subprocess.Run(# Execute the directory creation one-liner.
+            createSubDirectory.split()
+        ); information(
+            f"{_time:{_name}:      --Created subdirectory at {local_directory}"
+        )
+
+        # Log any mishaps and inform the caller.
+        except Exception as error:
+            exception(
+                f"{_time}:{_name}:"
+                f"There was an issue creating the .local subdirectory:\n"
+                f"{error}"
+            )
+
 
     # Begin sqlite database connection and initialize cursor.
-    connection = sqlite3.connect(lab_database)
-    cursor = connection.cursor(); execute = cursor.execute
+    debugging(f"{_time}:{_name}:    --Attempting connection to database at {lab_database}")
+    try:
+        # Establish connection to .db file.
+        connection = sqlite3.connect(lab_database); debugging(
+            f"{_time}:{_name}:      --Connection established ✅"
+        )
 
-    # Run the tabe creation sql and save your work!
+        # Create cursor and lable it for execution.
+        cursor = connection.cursor(); execute = cursor.execute; debugging(
+            f"{_time}:{_name}:      --Cursor successfully labelled ✅"
+        )
+
+    # Run the table creation sql and save your work!
     while True: try:
         cursor.execute(
             createMessagesTable_SQL
+        ); information(
+            f"{_time}:{_name}:Messages table successfully created for user {username()}"
         ); connection.commit(); break
 
+    # Handle any errors gracefully, and inform the caller.
     except Exception as error:
         exception(
+            f"{_time}:{_name}:"
             f"There was an issue creating a messages table "
             f"within the user database;\n{error}}"
         )
