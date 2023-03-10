@@ -101,9 +101,6 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
         # Create a thread in order to handle messages sent by server
         threading.Thread(target=handle_messages, args=[socket_instance]).start()
 
-        print('Connected to {SERVER_ADDRESS}, port {SERVER_PORT}.')
-
-        # Read user's input until it quit from chat and close connection
         while True:
 
             # Recieve user input as message string.
