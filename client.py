@@ -104,9 +104,7 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
         while True:
 
             # Recieve user input as message string.
-            msg = input()
-
-            message_packet = {"content": msg, "username": username()})
+            message_packet = {"content": input(), "username": username()})
            
 
             # User Commands
