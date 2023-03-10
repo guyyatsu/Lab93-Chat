@@ -111,11 +111,32 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
         while True:
             msg = input()
 
-            if msg == 'quit':
-                break
+            message_packet = {"content": msg, "username": username()})
+           
+
+            # User Commands
+            """ User commands allow for actions to be made from chat;
+            such as quitting the session or defining a subject for
+            a message.  Commands are defined by typing a forward slash
+            as the first letter of your message."""
+            if msg[0] != "/": pass
+            else:
+                cmd = msg.split(" ")[0]
+
+                if cmd == "/quit" or "quit" or None: break
+
+                if cmd == "/subject" or "subject" or "subject:":
+                    message_packet["subject"] = str(msg.split(" ")[1])
+                    message_packet["content"] = str(" ".join(msg.split(" ")[2:-1]))
+
+            # Convert message packet to ascii string
+            byteMessage = base64.b64encode(
+                str(message_packet).encode('ascii')
+            )
+
 
             # Parse message to utf-8
-            socket_instance.send(msg.encode())
+            socket_instance.send(byteMessage)
 
         # Close connection with the server
         socket_instance.close()
@@ -133,9 +154,9 @@ if __name__ == "__main__":
 
     arguments = parser.parse_args()
     if arguments.address: address = arguments.address
-    else: address = ".0.0.0"
+    else: address = "0.0.0.0"
 
-    if not arguments.port: port = arguments.port
+    if arguments.port: port = arguments.port
     else: port = 12000
 
     client(address, port)
