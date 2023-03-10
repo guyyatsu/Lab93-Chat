@@ -1,5 +1,69 @@
 import socket, threading
-import argparse 
+import argparse
+from os import getlogin as username
+import base64
+from glob import glob
+from logging import getLogger, exception
+
+
+
+def createUserDB():
+    """
+    Create an sqlite3 database within the users .local directory and populate
+    it with a table for logging chat messages.
+
+    The table will consist of a X fields; username for logging who sent the
+    message, subject for the general idea behind the message which can be set
+    with a /command, a timestamp for when it was sent, and the text body
+    of the message itself.
+    """
+
+    # Set up logging.
+    getLogger()
+
+    # The users .local directory; see the Linux FS for info about that.
+    local_directory = f"/home/{username()}/.local"
+
+    # Filename and path for the sqlite database.
+    lab_database = f"{local_directory}/lab-93.db"
+
+    # Bash command for creating the .local directory.
+    createSubDirectory = f"mkdir -p {local_directory} > /dev/null "
+
+    # SQLite3 command for creating the messages table
+    # with our required columns.
+    createMessagesTable_SQL = (
+        f"CREATE TABLE IF NOT EXISTS "
+            f"messages("
+                f"username TEXT REQUIRED KEY, "
+                f"subject TEXT, "
+                f"timestamp REAL, "
+                f"message TEXT"
+            f")"
+    )
+
+    # Check for the .local directory and create it if need be.
+    if len(glob(local_directory)) >= 1: pass
+    else: subprocess.Run(createSubDirectory.split())
+
+    # Begin sqlite database connection and initialize cursor.
+    connection = sqlite3.connect(lab_database)
+    cursor = connection.cursor(); execute = cursor.execute
+
+    # Run the tabe creation sql and save your work!
+    while True: try:
+        cursor.execute(
+            createMessagesTable_SQL
+        ); connection.commit(); break
+
+    except Exception as error:
+        exception(
+            f"There was an issue creating a messages table "
+            f"within the user database;\n{error}}"
+        )
+
+        return error
+
 
 def handle_messages(connection: socket.socket):
     '''

@@ -80,10 +80,10 @@ def server(LISTENING_PORT, IP_ADDRESS) -> None:
     try:
         # Create server and specifying that it can only handle 4 connections by time!
         socket_instance = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket_instance.bind((IP_ADDRESS, LISTENING_PORT))
+        socket_instance.bind((IP_ADDRESS, int(LISTENING_PORT)))
         socket_instance.listen(4)
 
-        print(f'Server running at {IP_ADDRESS} on port {LISTENING_PORT}!')
+        print(f'Server running at {IP_ADDRESS} on port {LISTENING_PORT}.')
         
         while True:
 
@@ -114,10 +114,10 @@ if __name__ == "__main__":
 
     arguments = parser.parse_args()
 
-    if not arguments.address: address = arguments.address
+    if arguments.address: address = arguments.address
     else: address = "0.0.0.0"
 
-    if not arguments.port: port= arguments.port
+    if arguments.port: port= arguments.port
     else: port = 12000
 
 
