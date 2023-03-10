@@ -35,7 +35,7 @@ def handle_user_connection(connection: socket.socket, address: str) -> None:
             break
 
 
-def broadcast(message: str, connection: socket.socket) -> None:
+def broadcast(message, connection: socket.socket) -> None:
     '''
         Broadcast message to all users connected to the server
     '''
@@ -46,7 +46,7 @@ def broadcast(message: str, connection: socket.socket) -> None:
         if client_conn != connection:
             try:
                 # Sending message to client connection
-                client_conn.send(message.encode())
+                client_conn.send(message["content"].encode())
 
             # if it fails, there is a chance of socket has died
             except Exception as e:
