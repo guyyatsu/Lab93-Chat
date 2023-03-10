@@ -3,10 +3,7 @@ from glob import glob
 import base64
 import argparse
 from os import getlogin as username
-
-
 from logging import getLogger, exception
-
 
 
 def createUserDB():
