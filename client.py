@@ -94,11 +94,9 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
         and handle it's input messages
     '''
 
-    # Port and address are taken by argument now.
-    #SERVER_ADDRESS = '0.0.0.0'
-    #SERVER_PORT = 12000
 
     try:
+
         # Instantiate socket and start connection with server
         socket_instance = socket.socket()
         socket_instance.connect((SERVER_ADDRESS, int(SERVER_PORT)))
