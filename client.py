@@ -24,6 +24,13 @@ def createUserDB():
     # Set up logging.
     getLogger()
 
+    _name = inspect.stack()[0][3]
+    _time = lambda datetime.timestamp(datetime.now())
+
+    debugging(#####} CONSTANTS
+        f"{_time}:{_name}:Beginning constants setup."
+    )
+
     # The users .local directory; see the Linux FS for info about that.
     local_directory = f"/home/{username()}/.local"
 
