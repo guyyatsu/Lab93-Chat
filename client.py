@@ -101,11 +101,12 @@ def client(SERVER_ADDRESS, SERVER_PORT) -> None:
     try:
         # Instantiate socket and start connection with server
         socket_instance = socket.socket()
-        socket_instance.connect((SERVER_ADDRESS, SERVER_PORT))
+        socket_instance.connect((SERVER_ADDRESS, int(SERVER_PORT)))
+
         # Create a thread in order to handle messages sent by server
         threading.Thread(target=handle_messages, args=[socket_instance]).start()
 
-        print('Connected to chat!')
+        print('Connected to {SERVER_ADDRESS}, port {SERVER_PORT}.')
 
         # Read user's input until it quit from chat and close connection
         while True:
