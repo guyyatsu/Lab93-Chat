@@ -1,8 +1,8 @@
 import socket, threading
+from glob import glob
+import base64
 import argparse
 from os import getlogin as username
-import base64
-from glob import glob
 from logging import getLogger, exception
 from logging import debug as debugging
 from logging import info as information
