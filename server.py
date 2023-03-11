@@ -1,24 +1,20 @@
 import socket, threading
 import argparse
 
-# Global variable that mantain client's connections
 connections = []
 
+
 def handle_user_connection(connection: socket.socket, address: str) -> None:
-    '''
-        Get user connection in order to keep receiving their messages and
-        sent to others users/connections.
-    '''
     while True:
         try:
-            # Get client message
-            msg = connection.recv(1024)
+            # Recieve client's posted message.
+            msg = connection.recv(4096)
 
-            # If no message is received, there is a chance that connection has ended
-            # so in this case, we need to close connection and remove it from connections list.
             if msg:
-                # Log message sent by user
-                print(f'{address[0]}:{address[1]} - {msg.decode()}')
+                # TODO: Log client messages to server database.
+                message = load(b64decode(msg)\
+                                     .decode()\
+                                     .replace("'", '"'))
                 
                 # Build message format and broadcast to users connected on server
                 msg_to_send = f'From {address[0]}:{address[1]} - {msg.decode()}'
@@ -55,9 +51,6 @@ def broadcast(message, connection: socket.socket) -> None:
 
 
 def remove_connection(conn: socket.socket) -> None:
-    '''
-        Remove specified connection from connections list
-    '''
 
     # Check if connection exists on connections list
     if conn in connections:
@@ -66,39 +59,46 @@ def remove_connection(conn: socket.socket) -> None:
         connections.remove(conn)
 
 
-def server(LISTENING_PORT, IP_ADDRESS) -> None:
-    '''
-        Main process that receive client's connections and start a new thread
-        to handle their messages
-    '''
+def server(port, address) -> None:
+    """
 
-
-    # Address and port are collected via argument.
-    #LISTENING_PORT = 12000
-    #IP_ADDRESS = "0.0.0.0"
+    """
     
+
     try:
-        # Create server and specifying that it can only handle 4 connections by time!
-        socket_instance = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket_instance.bind((IP_ADDRESS, int(LISTENING_PORT)))
+        socket_instance = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM
+        )
+
+        socket_instance.bind(
+            (str(address), int(port))
+        )
+
         socket_instance.listen(4)
 
-        print(f'Server running at {IP_ADDRESS} on port {LISTENING_PORT}.')
+        # TODO: Log successful server instance.
         
         while True:
 
             # Accept client connection
             socket_connection, address = socket_instance.accept()
+
             # Add client connection to connections list
             connections.append(socket_connection)
-            # Start a new thread to handle client connection and receive it's messages
-            # in order to send to others connections
-            threading.Thread(target=handle_user_connection, args=[socket_connection, address]).start()
 
-    except Exception as e:
-        print(f'An error has occurred when instancing socket: {e}')
+            threading.Thread( target=handle_user_connection,
+                              args=[ socket_connection,
+                                     address            ]   )\
+                     .start()
+
+
+    except Exception as error:
+        # TODO: Exception Logging.
+        pass
+
+
     finally:
-        # In case of any problem we clean all connections and close the server connection
         if len(connections) > 0:
             for conn in connections:
                 remove_connection(conn)
@@ -108,11 +108,18 @@ def server(LISTENING_PORT, IP_ADDRESS) -> None:
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--address", help="IP Address to route connections on.")
-    parser.add_argument("-p", "--port", help="Port number to listen on.")
+    parser = ArgumentParser()
+
+    parser.add_argument( "-a",
+                         "--address",
+                         help="IP Address to route connections on." )
+
+    parser.add_argument( "-p",
+                         "--port",
+                         help="Port number to listen on." )
 
     arguments = parser.parse_args()
+
 
     if arguments.address: address = arguments.address
     else: address = "0.0.0.0"

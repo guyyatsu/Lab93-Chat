@@ -101,7 +101,8 @@ def createUserDB():
         cursor.execute(
             createMessagesTable_SQL
         ); information(
-            f"{_time}:{_name}:Messages table successfully created for user {username()}"
+            f"{_time}:{_name}:"
+            f"Messages table successfully created for user {username()}"
         ); connection.commit(); break
 
     # Handle any errors gracefully, and inform the caller.
@@ -116,17 +117,11 @@ def createUserDB():
 
 
 def handle_messages(connection: socket.socket):
-    '''
-        Receive messages sent by the server and display them to user
-    '''
 
     while True:
         try:
             msg = connection.recv(1024)
 
-            # If there is no message, there is a chance that connection has closed
-            # so the connection will be closed and an error will be displayed.
-            # If not, it will try to decode message in order to show to user.
             if msg:
                 print(msg.decode())
             else:
@@ -139,8 +134,6 @@ def handle_messages(connection: socket.socket):
             break
 
 def client(SERVER_ADDRESS, SERVER_PORT) -> None:
-    '''
-    '''
 
 
     try:
