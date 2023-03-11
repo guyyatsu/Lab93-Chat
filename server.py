@@ -16,9 +16,7 @@ def handle_user_connection(connection: socket.socket, address: str) -> None:
                                      .decode()\
                                      .replace("'", '"'))
                 
-                # Build message format and broadcast to users connected on server
-                msg_to_send = f'From {address[0]}:{address[1]} - {msg.decode()}'
-                broadcast(msg_to_send, connection)
+                broadcast(message, connection)
 
             # Close connection if no message was sent
             else:
@@ -31,22 +29,28 @@ def handle_user_connection(connection: socket.socket, address: str) -> None:
             break
 
 
-def broadcast(message, connection: socket.socket) -> None:
-    '''
-        Broadcast message to all users connected to the server
-    '''
+def broadcast(message: dict, sender: socket.socket) -> None:
 
     # Iterate on connections in order to send message to all client's connected
     for client_conn in connections:
-        # Check if isn't the connection of who's send
-        if client_conn != connection:
-            try:
-                # Sending message to client connection
-                client_conn.send(message["content"].encode())
+        # Don't send back to the sender.
+        if client_conn != sender:
 
-            # if it fails, there is a chance of socket has died
-            except Exception as e:
-                print('Error broadcasting message: {e}')
+            if message["subject"]:# Add the subject line, if one is provided.
+                message_string = ( f"from: {message['username']}\n"
+                                   f"subject: {message['subject']}\n"
+                                   f"content:\n{message['content']}\n" )\
+                    .encode()
+
+            # Otherwise, present the string as normal.
+            else: message_string = ( f"from: {message['username']}\n"
+                                     f"content:\n{message['content']}\n"
+
+            try: client.send(message_string)
+
+            # If that fails, you've probably got a dead socket.
+            except Exception as error:
+                print('Error broadcasting message: {error}')
                 remove_connection(client_conn)
 
 
