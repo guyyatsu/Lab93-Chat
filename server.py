@@ -29,8 +29,11 @@ def handle_user_connection(connection: socket.socket, address: str) -> None:
                 remove_connection(connection)
                 break
 
-        except Exception as e:
-            print(f'Error to handle user connection: {e}')
+        except Exception as error:
+            exception(
+                    f"There was an issue handling the user connection:\n"
+                    f"{error}"
+            )
             remove_connection(connection)
             break
 
