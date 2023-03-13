@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import socket
 import threading
 from os import getlogin as username
@@ -25,19 +24,8 @@ class client:
             try:
                 msg = connection.recv(1024)
     
-=======
-import socket, threading
-from glob import glob
-import base64
-import argparse
-from json import loads as load
-from logging import getLogger, exception
-from logging import debug as debugging
-from logging import info as information
-from datetime import datetime
-import inspect
 
-class Client:
+class client:
     """Client class"""
 
     def __init__(self):
@@ -49,7 +37,6 @@ class Client:
             try:
                 msg = connection.recv(1024)
 
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
                 if msg:
                     print(msg.decode())
                 else:
@@ -61,7 +48,6 @@ class Client:
                 connection.close()
                 break
 
-<<<<<<< HEAD
 
     def start(self, address, port) -> None:
         """
@@ -104,7 +90,6 @@ class Client:
                 }
                
     
-=======
     def start(self, address, port) -> None:
 
 
@@ -124,13 +109,12 @@ class Client:
                 message_content = message_packet["content"]
                 username = message_packet["username"]
 
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
+
                 # User Commands
                 """ User commands allow for actions to be made from chat;
                 such as quitting the session or defining a subject for
                 a message.  Commands are defined by typing a forward slash
                 as the first letter of your message."""
-<<<<<<< HEAD
     
                 # All commands start with a '/', so check for that.
                 if message_packet["content"][0] != "/": pass
@@ -155,7 +139,6 @@ class Client:
     
                 # Convert message packet to ascii string and send to the comms bus.
                 socket_instance.send(
-=======
 
                 # All commands start with a '/', so check for that.
                 if message_packet["content"][0] != "/": pass
@@ -179,12 +162,10 @@ class Client:
 
                 # Convert message packet to ascii string
                 self.socket_instance.send(
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
                     base64.b64encode(
                         str(message_packet).encode('ascii')
                     )
                 )
-<<<<<<< HEAD
     
             # Close connection with the server
             socket_instance.close()
@@ -202,41 +183,29 @@ class server:
 
 
     def __init__(self):
-        """ """
-=======
-
-            # Close connection with the server
-            self.socket_instance.close()
-
-        except Exception as e:
-            print(f'Error connecting to server socket {e}')
-            self.socket_instance.close()
+        self = self
 
 
-class Server:
+class server:
     """Server class"""
     
-    def __init__(self, address="127.0.0.1", port=5190):
+    def __init__(self):
         """
         Set up a couple of constants required at runtime.  Here we've got self; but also
         we've got self.address which defines an IP to make the service available on, a self.port
         which narrows down the channel to operate on, and self.connections which enumerates every
         address that has made a valid connection to the instance.
         """
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
 
         # The classes semblance of identity.
         self             = self
 
-<<<<<<< HEAD
-=======
         # An address to host services on.
         self.address     = address
 
         # A socket to listen out for.
         self.port        = port
 
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
         # A list of clients connected to this server.
         self.connections = []
 
@@ -251,11 +220,7 @@ class Server:
                     # TODO: Log client messages to server database.
 
                     # Convert the msg bytes into a dictionary named message.
-<<<<<<< HEAD
-                    message = load(b64decode(msg)\
-=======
                     message = load(base64.b64decode(msg)\
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
                                          .decode()\
                                          .replace("'", '"'))
                     
@@ -313,30 +278,22 @@ class Server:
             self.connections.remove(conn)
     
     
-<<<<<<< HEAD
-    def server(self, address, port) -> None:
-=======
     def start(self, address, port) -> None:
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
         """
     
         """
-        
-    
-<<<<<<< HEAD
         try:# Set up a socket to run the server on.
 
             # Create the socket object.
             socket_instance = socket.socket(
-=======
+
         try:
             self.socket_instance = socket.socket(
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
                 socket.AF_INET,
                 socket.SOCK_STREAM
             )
 
-<<<<<<< HEAD
+
             # Bind the object to an address and port.
             socket_instance.bind(
                 (str(address), int(port))
@@ -344,24 +301,24 @@ class Server:
 
             # Begin listening on the connection.
             socket_instance.listen(4)
-=======
+
             self.socket_instance.bind(
                 (str(address), int(port))
             )
 
             self.socket_instance.listen(4)
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
+
 
             # TODO: Log successful server instance.
         
             while True:
 
                 # Accept client connection
-<<<<<<< HEAD
+
                 socket_connection, address = socket_instance.accept()
-=======
+
                 socket_connection, address = self.socket_instance.accept()
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
+
 
                 # Add client connection to connections list
                 self.connections.append(socket_connection)
@@ -378,7 +335,7 @@ class Server:
 
 
         finally:
-<<<<<<< HEAD
+
             if len(connections) > 0:
                 for conn in connections:
                     remove_connection(conn)
@@ -609,11 +566,10 @@ if __name__ == "__main__":
         else:
             if arguments.server: server.server(address, port)
             if arguments.client: client.client(address, port)
-=======
+
             if len(self.connections) > 0:
                 for i in range(len(self.connections)):
                     del self.connections[0]
                     
 
             self.socket_instance.close()
->>>>>>> 07636e6aebe315c45abde9faed3739284b07eb94
