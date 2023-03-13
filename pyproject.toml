@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Lab93-Chat"
+version = "0.0.1"
+authors = [
+  { name="Hunter G. Dale", email="guyyatsu@gmail.com" },
+  { name="Timothy J. Newton", email="timothynewton1998@gmail.com" }
+]
+description = "A basic TCP/IP websocket chat server, with some tweaks to bring it up to speed with the 'Net."
+readme = "readme.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/guyyatsu/Lab93-Chat"
+"Bug Tracker" = "https://github.com/guyyatsu/Lab93-Chat/issues"
