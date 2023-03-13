@@ -122,28 +122,6 @@ class client:
                     # Scan the local network for fellow chat servers.
                     if cmd == "/scan": pass
                         
-    
-    
-                # Convert message packet to ascii string and send to the comms bus.
-                socket_instance.send(
-
-                # All commands start with a '/', so check for that.
-                if message_packet["content"][0] != "/": pass
-                else:
-
-                    # The command is the first word in the msg.
-                    cmd = message_packet["content"].split(" ")[0]
-
-                    # The quit command breaks the loop and
-                    # returns control back to the terminal.
-                    if cmd == "/quit": 
-                        break
-
-                    # Allows the attachment of a subject line to a msg.
-                    if cmd == "/subject":
-                        message_packet["subject"] = str(message_content.split(" ")[1])
-                        message_packet["content"] = str(" ".join(message_content.split(" ")[2:-1]))
-
                     if cmd == "/changename":
                         pass
 
@@ -169,12 +147,6 @@ class client:
 class server:
 
 
-    def __init__(self):
-        self = self
-
-
-class server:
-    """Server class"""
     
     def __init__(self):
         """
@@ -224,6 +196,7 @@ class server:
                         f"There was an issue handling the user connection:\n"
                         f"{error}"
                 )
+                
                 self.remove_connection(connection)
                 break
     
@@ -303,13 +276,11 @@ class server:
                 # Accept client connection
 
                 socket_connection, address = socket_instance.accept()
-
                 socket_connection, address = self.socket_instance.accept()
 
 
                 # Add client connection to connections list
                 self.connections.append(socket_connection)
-
                 threading.Thread( target=self.handle_user_connection,
                                   args=[ socket_connection,
                                          address            ]   )\
@@ -332,7 +303,7 @@ class server:
 
 class tools:
 
-    def __init__(self):
+    def __init__(self): pass
 
     def createUserDB():
         """
@@ -379,8 +350,6 @@ class tools:
                 f")"
         )
         debugging(f"{_time}:{_name}:    --Messages Table Creation SQL String: ✅")
-    
-    
     
         # Check for the .local directory and create it if need be.
         debugging(f"{_time}:{_name}:    --Validate Local Directory:")
@@ -445,7 +414,6 @@ if __name__ == "__main__":
 
     class OptionsError(Exception):
 
-
         class ConflictingOptions(Exception, *options):
             """ Called if the user calls exclusive, conflicting options. """
             
@@ -455,6 +423,7 @@ if __name__ == "__main__":
             )
 
             exit()
+
 
         class InsufficientOptions(Exception,  *options, **solutions):
             """ Called if the user does not provide enough information. """
