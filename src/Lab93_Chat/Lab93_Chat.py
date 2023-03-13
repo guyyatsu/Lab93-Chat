@@ -16,20 +16,7 @@ class client:
 
     def __init__(self):
         self = self
-
-
-    def handle_messages(self, connection: socket.socket):
-    
-        while True:
-            try:
-                msg = connection.recv(1024)
-    
-
-class client:
-    """Client class"""
-
-    def __init__(self):
-        pass
+        
 
     def handle_messages(self, connection: socket.socket):
 
