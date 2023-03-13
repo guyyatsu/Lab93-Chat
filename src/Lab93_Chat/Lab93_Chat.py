@@ -37,48 +37,12 @@ class client:
 
 
     def start(self, address, port) -> None:
-        """
-        """
-
-        # Set up logging.
+    
+      # Set up logging.
         getLogger()
     
         _name = inspect.stack()[0][3]
         _time = lambda datetime.timestamp(datetime.now())
-
-
-        debugging(
-            f"{_time}:{_name}:Beginning client connection."
-        )
-
-        try:
-    
-            # Instantiate socket and start connection with server.
-            socket_instance = socket.socket(); debugging(
-                f"{_time}:{_name}:"
-            )
-
-            socket_instance.connect(
-                (str(address), int(port))
-            )
-
-            # Create a thread in order to handle messages sent by server
-            threading.Thread(
-                target=handle_messages, 
-                args=[socket_instance]
-            ).start()
-    
-            while True:
-    
-                # Recieve user input as message string.
-                message_packet = {
-                    "content": input(), 
-                    "username": username()
-                }
-               
-    
-    def start(self, address, port) -> None:
-
 
         try:
 
@@ -92,8 +56,13 @@ class client:
             while True:
 
                 # Recieve user input as message string.
-                message_packet = {"content": input(), "username": username()}
+                message_packet = {
+                    "content": input(),
+                    "username": username()
+                }
+                
                 message_content = message_packet["content"]
+                
                 username = message_packet["username"]
 
 
