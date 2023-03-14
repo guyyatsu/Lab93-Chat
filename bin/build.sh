@@ -1,29 +1,19 @@
 #!/bin/bash
 
+# Binary directory local to the project.
 ProjectBin=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Activate te development environment.
-source $ProjectBin/activate
+# Move to the project directory and start a new branch.
+cd $ProjectBin/.. && python3 $ProjectBin/BuildFunctions.py --branch
 
-cd $ProjectBin/..
+# Open the Vim IDE.  Note that NERDTree is useful here.
+vim $ProjectBin/../src/Lab93_Chat/
 
-python3 $ProjectBin/IncrementVersion.py $ProjectBin/..pyproject.toml
-python3 -m build
+# Add your patches and push your commits.
+python3 $ProjectBin/BuildFunctions.py --enumerate
 
+# Increment the build version in the project file.
+python3 $ProjectBin/BuildFunctionspy --increment --file $ProjectBin/..pyproject.toml
 
-
-
-# Obsolete; fuck jupyter. See Issue #9.
-# Left for posterity.
-function CompileJupyter() {
-
-    # Compile notebook to python source.
-    jupyter nbconvert --to python \
-	                  --output-dir="$ProjectBin/../src/Lab93_chat" \
-		              --output="ChatSystem"
-
-    # Compile new readme file.
-    jupyter nbconvert --to markdown \
-	                  --output-dir="$ProjectBin/.." \
-		              --output="readme"
-}
+# Build and upload the pip package.
+python3 -m build && python3 -m twine upload $ProjectBin/../dist/*
