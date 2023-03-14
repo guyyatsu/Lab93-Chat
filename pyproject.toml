@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Lab93-Chat"
-version = "0.0.1"
+version = "0.0.0"
 authors = [
   { name="Hunter G. Dale", email="guyyatsu@gmail.com" },
   { name="Timothy J. Newton", email="timothynewton1998@gmail.com" }
