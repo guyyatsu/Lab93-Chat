@@ -1,21 +1,20 @@
+import base64
+import datetime
 import socket
 import threading
-from os import getlogin as username
-from datetime import datetime
 import inspect
+from os import getlogin as username
 from argparse import ArgumentParser
 from json import loads as load
-from base64 import b64decode, b64encode
 from logging import getLogger, exception
-from logging import info as information
-from logging import debug as debugging
 
 
-class client:
+
+class Client:
 
 
     def __init__(self):
-        self = self
+        pass
         
 
     def handle_messages(self, connection: socket.socket):
@@ -42,7 +41,7 @@ class client:
         getLogger()
     
         _name = inspect.stack()[0][3]
-        _time = lambda datetime.timestamp(datetime.now())
+        _time = lambda: datetime.timestamp(datetime.now())
 
         try:
 
@@ -85,8 +84,8 @@ class client:
     
                     # Allows the attachment of a subject line to a msg.
                     if cmd == "/subject":
-                        message_packet["subject"] = str(msg.split(" ")[1])
-                        message_packet["content"] = str(" ".join(msg.split(" ")[2:-1]))
+                        message_packet["subject"] = str(message_content.split(" ")[1])
+                        message_packet["content"] = str(" ".join(message_content.split(" ")[2:-1]))
     
                     # Scan the local network for fellow chat servers.
                     if cmd == "/scan": pass
@@ -102,18 +101,18 @@ class client:
                 )
     
             # Close connection with the server
-            socket_instance.close()
+            self.socket_instance.close()
     
-        except Exception as Error:
+        except Exception as error:
             exception(
                 f"{_name}:{_time}There was an issue trying to set up the chat client;\n"
                 f"{error}"
-            ); socket_instance.close()
+            ); self.socket_instance.close()
 
-            return Error
+            return error
 
 
-class server:
+class Server:
 
 
     
@@ -124,9 +123,6 @@ class server:
         which narrows down the channel to operate on, and self.connections which enumerates every
         address that has made a valid connection to the instance.
         """
-
-        # The classes semblance of identity.
-        self             = self
 
         # An address to host services on.
         self.address     = address
@@ -190,12 +186,13 @@ class server:
                                        f"content:\n{message['content']}\n" )\
                         .encode()
     
-                try: client.send(message_string)
+                try: 
+                    client.send(message_string)
     
                 # If that fails, you've probably got a dead socket.
                 except Exception as error:
                     print('Error broadcasting message: {error}')
-                    self.remove_connection(client_conn)
+                    self.remove_connection(client)
     
     
     def remove_connection(self, conn: socket.socket) -> None:
@@ -211,12 +208,13 @@ class server:
         """
     
         """
+        print(f"Starting server on ip {address} and port {port}...")
         try:# Set up a socket to run the server on.
 
             # Create the socket object.
-            socket_instance = socket.socket(
+            socket_instance = socket.socket()
 
-        try:
+
             self.socket_instance = socket.socket(
                 socket.AF_INET,
                 socket.SOCK_STREAM
@@ -224,29 +222,23 @@ class server:
 
 
             # Bind the object to an address and port.
-            socket_instance.bind(
-                (str(address), int(port))
-            )
-
-            # Begin listening on the connection.
-            socket_instance.listen(4)
-
             self.socket_instance.bind(
                 (str(address), int(port))
             )
 
+            # Begin listening on the connection.
             self.socket_instance.listen(4)
 
 
             # TODO: Log successful server instance.
         
             while True:
-
+                print("Waiting for connections...")
                 # Accept client connection
 
-                socket_connection, address = socket_instance.accept()
                 socket_connection, address = self.socket_instance.accept()
 
+                print(f"Connection to {address} made!")
 
                 # Add client connection to connections list
                 self.connections.append(socket_connection)
@@ -257,125 +249,19 @@ class server:
 
 
         except Exception as error:
+            print(error)
             # TODO: Exception Logging.
             pass
 
 
         finally:
 
-            if len(connections) > 0:
-                for conn in connections:
-                    remove_connection(conn)
+            if len(self.connections) > 0:
+                for conn in self.connections:
+                    self.remove_connection(conn)
 
             socket_instance.close()
 
-
-class tools:
-
-    def __init__(self): pass
-
-    def createUserDB():
-        """
-        Create an sqlite3 database within the users .local directory and populate
-        it with a table for logging chat messages.
-    
-        The table will consist of a X fields; username for logging who sent the
-        message, subject for the general idea behind the message which can be set
-        with a /command, a timestamp for when it was sent, and the text body
-        of the message itself.
-        """
-    
-        # Set up logging.
-        getLogger()
-    
-        _name = inspect.stack()[0][3]
-        _time = lambda datetime.timestamp(datetime.now())
-    
-        debugging(#####} CONSTANTS
-            f"{_time}:{_name}:Beginning constants setup."
-        )
-    
-        # The users .local directory; see the Linux FS for info about that.
-        local_directory = f"/home/{username()}/.local"
-        debugging(f"{_time}:{_name}:    --Local Directory: ✅")
-    
-        # Filename and path for the sqlite database.
-        lab_database = f"{local_directory}/lab-93.db"
-        debugging(f"{_time}:{_name}:    --Lab Database: ✅")
-    
-        # Bash command for creating the .local directory.
-        createSubDirectory = f"mkdir -p {local_directory} > /dev/null "
-        debugging(f"{_time}:{_name}:    --Sub-Directory Shell String: ✅")
-    
-        # SQLite3 command for creating the messages table
-        # with our required columns.
-        createMessagesTable_SQL = (
-            f"CREATE TABLE IF NOT EXISTS "
-                f"messages("
-                    f"username TEXT REQUIRED KEY, "
-                    f"subject TEXT, "
-                    f"timestamp REAL, "
-                    f"message TEXT"
-                f")"
-        )
-        debugging(f"{_time}:{_name}:    --Messages Table Creation SQL String: ✅")
-    
-        # Check for the .local directory and create it if need be.
-        debugging(f"{_time}:{_name}:    --Validate Local Directory:")
-    
-        # If glob returns any results then the directory already exists.
-        if len(glob(local_directory)) >= 1:
-            debugging(f"{_time}:{_name}:      --Directory exists. ✅"); pass
-    
-        else:# If not, then the directory needs to be created.
-            debugging(f"{_time}:{_name}:      --Directory does not exist; creating.")
-    
-            try: subprocess.Run(# Execute the directory creation one-liner.
-                createSubDirectory.split()
-            ); information(
-                f"{_time:{_name}:      --Created subdirectory at {local_directory}"
-            )
-    
-            # Log any mishaps and inform the caller.
-            except Exception as error:
-                exception(
-                f"{_time}:{_name}:"
-                f"There was an issue creating the .local subdirectory:\n"
-                f"{error}"
-            )
-
-
-    # Begin sqlite database connection and initialize cursor.
-    debugging(f"{_time}:{_name}:    --Attempting connection to database at {lab_database}")
-    try:
-        # Establish connection to .db file.
-        connection = sqlite3.connect(lab_database); debugging(
-            f"{_time}:{_name}:      --Connection established ✅"
-        )
-
-        # Create cursor and lable it for execution.
-        cursor = connection.cursor(); execute = cursor.execute; debugging(
-            f"{_time}:{_name}:      --Cursor successfully labelled ✅"
-        )
-
-    # Run the table creation sql and save your work!
-    while True: try:
-        cursor.execute(
-            createMessagesTable_SQL
-        ); information(
-            f"{_time}:{_name}:"
-            f"Messages table successfully created for user {username()}"
-        ); connection.commit(); break
-
-    # Handle any errors gracefully, and inform the caller.
-    except Exception as error:
-        exception(
-            f"{_time}:{_name}:"
-            f"There was an issue creating a messages table "
-            f"within the user database;\n{error}}"
-        )
-
-        return error
 
 
 if __name__ == "__main__":
@@ -383,27 +269,33 @@ if __name__ == "__main__":
 
     class OptionsError(Exception):
 
-        class ConflictingOptions(Exception, *options):
+        class ConflictingOptions(Exception):
             """ Called if the user calls exclusive, conflicting options. """
-            
-            print(
-                f"Conflicting arguments {argument for argument in options} "
-                f"can not be used together."
-            )
-
-            exit()
-
-
-        class InsufficientOptions(Exception,  *options, **solutions):
-            """ Called if the user does not provide enough information. """
-
-            for option in options:
+            def __init__(self, *options):
+                super().__init__()
+                arguments = ""
+                for args in options:
+                    arguments += args + " "
                 print(
-                    f"Option {option} requires additional information;\n"
-                    f"Try {solutions[option]}"
+                    f"Conflicting arguments {arguments} "
+                    f"can not be used together."
                 )
 
-            exit()
+                exit()
+
+
+        class InsufficientOptions(Exception):
+            """ Called if the user does not provide enough information. """
+            def __init__(self, *options, **solutions):
+                super().__init__()
+
+                for option in options:
+                    print(
+                        f"Option {option} requires additional information;\n"
+                        f"Try {solutions[option]}"
+                    )
+
+                exit()
 
 
     parser = ArgumentParser()
@@ -421,10 +313,6 @@ if __name__ == "__main__":
                          "--client",
                          action="store_true",
                          help="If using repeater mode, sets the agent to client mode." )
-
-    parser.add_argument( "-m",
-                         "--mode",
-                         help="Alternate definition of either repeater or broadcast mode." )
 
     parser.add_argument( "-p",
                          "--port",
@@ -444,36 +332,38 @@ if __name__ == "__main__":
 
 
     # Collect or define address; defaults to all public addresses.
-    if arguments.address: address = arguments.address
-    else: address = "0.0.0.0"
+    if arguments.address: 
+        address = arguments.address
+    else: 
+        address = "0.0.0.0"
 
 
     # Collect or define port number; default to 5190 because AOL Chat.
-    if arguments.port: port = arguments.port
-    else: port = 5190
+    if arguments.port: 
+        port = arguments.port
+    else: 
+        port = 5190
     
 
-    # The mode could be anything, but we only respond to two specific options.
-    if arguments.mode and arguments.mode != "repeater" or "broadcast":
-        raise OptionsError.ImproperOptions()
-
     # If not by mode bu by flag, but we have both flags, thats a conflict.
-    elif not arguments.mode and arguments.broadcast and arguments.repeater:
+    if arguments.broadcast and arguments.repeater:
         raise OptionsError.ConflictingOptions(
             "--broadcast", "--repeater"
         )
 
     # If not by mode nor flag, that's an insufficiency.
-    elif not arguments.mode and not arguments.broadcast and not arguments.repeater:
+    elif not arguments.broadcast and not arguments.repeater:
         raise OptionsError.InsufficientOptions()
 
 
     # Broadcast-Mode subchecks.
-    if arguments.broadcast is True or arguments.mode is "broadcast": ...
+    if arguments.broadcast is True: 
+        ...
+        #TODO: Broadcast process
 
 
     # Repeater-Mode subchecks.    
-    if arguments.repeater is True or arguments.mode is "repeater":
+    if arguments.repeater is True:
 
         # Check client & server aren't both given.
         if arguments.server and arguments.client:
@@ -489,12 +379,10 @@ if __name__ == "__main__":
             )
 
         else:
-            if arguments.server: server.server(address, port)
-            if arguments.client: client.client(address, port)
+            if arguments.server:
+                server1 = Server() 
+                server1.start(address, port)
+            if arguments.client: 
+                client1 = Client()
+                client1.start(address, port)
 
-            if len(self.connections) > 0:
-                for i in range(len(self.connections)):
-                    del self.connections[0]
-                    
-
-            self.socket_instance.close()
