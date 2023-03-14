@@ -29,7 +29,7 @@ class Tools:
         getLogger()
      
         _name = inspect.stack()[0][3]
-        _time = datetime.timestamp(datetime.now())
+        _time = lambda: datetime.timestamp(datetime.now())
     
         debugging(#####} CONSTANTS
             f"{_time}:{_name}:Beginning constants setup."
